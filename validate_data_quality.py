@@ -110,3 +110,33 @@ else:
     print("\nAMFI CODE VALIDATION: CHECK REQUIRED")
 
 print("\nData quality validation completed.")
+
+# --------------------------------------------------
+# 10. VALIDATE AMFI CODES AGAINST NAV HISTORY
+# --------------------------------------------------
+
+print("\n" + "=" * 70)
+print("AMFI CODE CROSS-DATASET VALIDATION")
+print("=" * 70)
+
+# Load NAV history
+nav_df = pd.read_csv("data/raw/nav_history.csv")
+
+# Convert both columns to the same data type
+fund_master_codes = set(df["amfi_code"].dropna().astype(int))
+nav_history_codes = set(nav_df["amfi_code"].dropna().astype(int))
+
+# Find codes present in fund_master but missing from nav_history
+missing_in_nav_history = fund_master_codes - nav_history_codes
+
+print("AMFI codes in fund_master:", len(fund_master_codes))
+print("AMFI codes in nav_history:", len(nav_history_codes))
+
+print("\nCodes from fund_master missing in nav_history:")
+
+if len(missing_in_nav_history) == 0:
+    print("None")
+    print("\nAMFI CROSS-DATASET VALIDATION: PASSED")
+else:
+    print(missing_in_nav_history)
+    print("\nAMFI CROSS-DATASET VALIDATION: FAILED")
